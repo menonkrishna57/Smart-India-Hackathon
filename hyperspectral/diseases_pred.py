@@ -7,14 +7,12 @@ from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropou
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import EarlyStopping
 
-# ========== CONFIGURATION ==========
 IMAGE_SIZE = (128, 128)
 BATCH_SIZE = 32
 EPOCHS = 10
-DATASET_PATH = 'dataset'        # dataset path
+DATASET_PATH = 'dataset'
 MODEL_PATH = 'disease_model.h5'
 
-# ========== MODEL DEFINITION ==========
 def build_model():
     model = Sequential([
         Conv2D(32, (3, 3), activation='relu', input_shape=(*IMAGE_SIZE, 3)),
@@ -24,12 +22,11 @@ def build_model():
         Flatten(),
         Dense(128, activation='relu'),
         Dropout(0.5),
-        Dense(len(os.listdir(DATASET_DIR)), activation='softmax')  # output layer based on class count
+        Dense(len(os.listdir(DATASET_DIR)), activation='softmax')
     ])
     model.compile(optimizer=Adam(), loss='categorical_crossentropy', metrics=['accuracy'])
     return model
 
-# ========== TRAINING ==========
 def train_model():
     datagen = ImageDataGenerator(rescale=1./255, validation_split=0.2)
 
@@ -60,7 +57,6 @@ def train_model():
 
     return model, train_data.class_indices
 
-# ========== PREDICTION ==========
 def predict_image(image_path, model, class_indices):
     img = load_img(image_path, target_size=IMAGE_SIZE)
     img_array = img_to_array(img) / 255.0
@@ -71,7 +67,6 @@ def predict_image(image_path, model, class_indices):
 
     print(f"📷 Image: {image_path} -> 🧪 Predicted Disease: {predicted_class}")
 
-# ========== MAIN ==========
 if __name__ == "__main__":
     import argparse
 
@@ -89,7 +84,6 @@ if __name__ == "__main__":
             exit()
 
         model = load_model(MODEL_PATH)
-        # Load class indices from the directory structure
         class_indices = {name: idx for idx, name in enumerate(sorted(os.listdir(DATASET_DIR)))}
 
     if args.predict:

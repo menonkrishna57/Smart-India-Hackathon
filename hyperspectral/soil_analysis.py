@@ -5,7 +5,6 @@ from sklearn.ensemble import RandomForestClassifier
 import argparse
 import joblib
 
-# ========== CONFIG ==========
 DATA_FILE = 'soil_data.csv'
 MODEL_FILE = 'soil_model.pkl'
 
@@ -13,10 +12,8 @@ CROP_REQUIREMENTS = {
     'wheat': {'nitrogen': 60, 'phosphorus': 40, 'potassium': 50, 'ph_range': (6.0, 7.0), 'soil_types': ['Loamy', 'Clay']},
     'rice':  {'nitrogen': 100, 'phosphorus': 50, 'potassium': 60, 'ph_range': (5.5, 7.0), 'soil_types': ['Clay', 'Silty']},
     'maize': {'nitrogen': 90, 'phosphorus': 45, 'potassium': 50, 'ph_range': (5.8, 7.0), 'soil_types': ['Loamy', 'Sandy']},
-    # Add more crops as needed
 }
 
-# ========== TRAINING ==========
 def train_model():
     df = pd.read_csv(DATA_FILE)
 
@@ -31,14 +28,12 @@ def train_model():
     print(f"✅ Model trained and saved to {MODEL_FILE}")
     return model
 
-# ========== PREDICTION ==========
 def predict_soil_type(model, input_data):
     features = ['latitude', 'longitude', 'nitrogen', 'phosphorus', 'potassium', 'ph']
     X = pd.DataFrame([input_data], columns=features)
     soil_type = model.predict(X)[0]
     return soil_type
 
-# ========== CROP SUITABILITY CHECK ==========
 def check_crop_suitability(crop, minerals, soil_type):
     crop = crop.lower()
     if crop not in CROP_REQUIREMENTS:
@@ -64,7 +59,6 @@ def check_crop_suitability(crop, minerals, soil_type):
     else:
         return False, "❌ Unsuitable:\n" + "\n".join(reasons)
 
-# ========== MAIN ==========
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Predict soil type and check crop suitability.")
     parser.add_argument('--train', action='store_true', help="Train the soil model")
@@ -81,7 +75,6 @@ if __name__ == "__main__":
     if args.train:
         train_model()
     else:
-        # Check required fields
         required_fields = [args.latitude, args.longitude, args.nitrogen, args.phosphorus, args.potassium, args.ph, args.crop]
         if any(val is None for val in required_fields):
             print("⚠️ Please provide all required inputs: --latitude --longitude --nitrogen --phosphorus --potassium --ph --crop")
